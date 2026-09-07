@@ -1,0 +1,35 @@
+{
+  "name": "ts-md-slides",
+  "version": "1.0.0",
+  "description": "CLI that converts a Markdown file into a self-contained HTML slide deck, with a live-reload preview dev server.",
+  "main": "dist/cli.js",
+  "type": "module",
+  "bin": {
+    "md-slides": "dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "pretest": "tsc -p tsconfig.test.json",
+    "test": "node --test dist-test/tests/*.test.js",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "markdown",
+    "slides",
+    "cli",
+    "presentation"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chokidar": "^5.0.0",
+    "marked": "^18.0.11"
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.1",
+    "typescript": "^5.9.3"
+  }
+}
