@@ -49,6 +49,11 @@ md-slides build examples/demo.md
 md-slides build examples/demo.md -o out/deck.html
 ```
 
+To export a PDF, open the generated HTML and choose **Print → Save as PDF**
+in your browser. Print styling includes every slide, starts each slide on a
+new page, and hides the navigation controls. Landscape orientation is
+recommended; slides with unusually long content may span multiple pages.
+
 ### Live-reload preview server
 
 ```bash

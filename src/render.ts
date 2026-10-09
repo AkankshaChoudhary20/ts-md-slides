@@ -121,6 +121,24 @@ const STYLE = `
     text-align: center;
     font-variant-numeric: tabular-nums;
   }
+
+  @media print {
+    @page { size: landscape; margin: 15mm; }
+    html, body { height: auto; background: white; color: black; }
+    #deck { height: auto; overflow: visible; }
+    .slide, .slide.active {
+      position: static;
+      display: flex;
+      min-height: 150mm;
+      padding: 0;
+      overflow: visible;
+      break-after: page;
+    }
+    .slide:last-child { break-after: auto; }
+    .slide pre, .slide :not(pre) > code { background: #eee; color: black; }
+    .slide a, .slide blockquote { color: #333; }
+    #controls { display: none; }
+  }
 `;
 
 const NAV_SCRIPT = `
