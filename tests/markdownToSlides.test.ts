@@ -52,3 +52,21 @@ test("handles CRLF line endings", () => {
   const slides = splitMarkdownIntoSlides(md);
   assert.equal(slides.length, 2);
 });
+
+
+test("preserves slide separators inside backtick and tilde code fences", () => {
+  for (const fence of ["```", "~~~"]) {
+    const first = ["# Code", fence + "yaml", "key: value", "---", "next: value", fence].join("\n");
+    assert.deepEqual(splitMarkdownIntoSlides(first + "\n---\n# Next"), [first, "# Next"]);
+  }
+});
+
+test("shorter or mismatched fences do not close a code block", () => {
+  const first = ["````markdown", "```", "~~~", "---", "````"].join("\n");
+  assert.deepEqual(splitMarkdownIntoSlides(first + "\n---\n# Next"), [first, "# Next"]);
+});
+
+test("an unclosed code fence keeps the rest on the same slide", () => {
+  const source = "# Example\n```yaml\n---\nvalue: 1";
+  assert.deepEqual(splitMarkdownIntoSlides(source), [source]);
+});
