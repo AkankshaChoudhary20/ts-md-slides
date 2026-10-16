@@ -51,3 +51,50 @@ test("live reload script is only injected when requested", () => {
   assert.match(withReload, /__livereload/);
   assert.doesNotMatch(without, /__livereload/);
 });
+
+// Execute the generated browser script so the test checks keyboard behavior,
+// rather than matching implementation text.
+import { runInNewContext } from "node:vm";
+function navigation() {
+  let keydown: (event: any) => void = () => {};
+  let active = 0;
+  const slides = [0, 1, 2].map(index => ({ classList: {
+    remove() {}, add() { active = index; }
+  } }));
+  const script = buildDeckHtml("# One\n---\n# Two\n---\n# Three")
+    .match(/<script>([\s\S]*?)<\/script>/)![1];
+  runInNewContext(script, {
+    document: {
+      querySelectorAll: () => slides,
+      getElementById: (id: string) => id === 'counter' ? {} : { addEventListener() {} },
+      addEventListener: (_: string, handler: typeof keydown) => { keydown = handler; }
+    },
+    history: { replaceState() {} }, location: { hash: '' }
+  });
+  return { keydown, active: () => active };
+}
+
+test("navigation preserves editing keys and modified shortcuts", () => {
+  const nav = navigation();
+  for (const target of [
+    { tagName: 'INPUT' }, { tagName: 'TEXTAREA' }, { tagName: 'SELECT' },
+    { tagName: 'SPAN', isContentEditable: true }
+  ]) {
+    for (const key of ['ArrowRight', 'ArrowLeft', ' ', 'Home', 'End', 'PageDown', 'PageUp']) {
+      nav.keydown({ key, target, preventDefault() { assert.fail('editing key consumed'); } });
+      assert.equal(nav.active(), 0);
+    }
+  }
+  for (const option of ['ctrlKey', 'metaKey', 'altKey', 'defaultPrevented']) {
+    nav.keydown({ key: 'ArrowRight', [option]: true, preventDefault() { assert.fail('shortcut consumed'); } });
+    assert.equal(nav.active(), 0);
+  }
+});
+
+test("navigation still advances and prevents scrolling for plain arrow keys", () => {
+  const nav = navigation();
+  let prevented = false;
+  nav.keydown({ key: 'ArrowRight', target: { tagName: 'BODY' }, preventDefault() { prevented = true; } });
+  assert.equal(nav.active(), 1);
+  assert.equal(prevented, true);
+});

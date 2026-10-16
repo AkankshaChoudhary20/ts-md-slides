@@ -162,6 +162,9 @@ const NAV_SCRIPT = `
   function prev() { show(current - 1); }
 
   document.addEventListener("keydown", function (e) {
+    var target = e.target;
+    if (e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey ||
+        (target && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)))) return;
     if (e.key === "ArrowRight" || e.key === " " || e.key === "PageDown") {
       e.preventDefault();
       next();
