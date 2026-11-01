@@ -70,3 +70,10 @@ test("an unclosed code fence keeps the rest on the same slide", () => {
   const source = "# Example\n```yaml\n---\nvalue: 1";
   assert.deepEqual(splitMarkdownIntoSlides(source), [source]);
 });
+
+
+test("handles classic CR line endings while preserving fenced separators", () => {
+  assert.deepEqual(splitMarkdownIntoSlides("# One\r---\r# Two"), ["# One", "# Two"]);
+  const first = "# Code\n```yaml\n---\n```";
+  assert.deepEqual(splitMarkdownIntoSlides((first + "\n---\n# Next").replace(/\n/g, "\r")), [first, "# Next"]);
+});

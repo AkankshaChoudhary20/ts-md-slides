@@ -7,7 +7,7 @@
  * after it) are dropped.
  */
 export function splitMarkdownIntoSlides(markdown: string): string[] {
-  const normalized = markdown.replace(/\r\n/g, "\n");
+  const normalized = markdown.replace(/\r\n?/g, "\n");
   const lines = normalized.split("\n");
 
   const slides: string[] = [];
