@@ -98,3 +98,13 @@ test("navigation still advances and prevents scrolling for plain arrow keys", ()
   assert.equal(nav.active(), 1);
   assert.equal(prevented, true);
 });
+
+test("Home and End select the deck boundaries without scrolling", () => {
+  const nav = navigation();
+  for (const [key, expected] of [['End', 2], ['Home', 0]] as const) {
+    let prevented = false;
+    nav.keydown({key, target:{tagName:'BODY'}, preventDefault(){prevented=true;}});
+    assert.equal(nav.active(), expected);
+    assert.equal(prevented, true);
+  }
+});

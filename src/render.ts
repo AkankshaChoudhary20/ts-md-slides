@@ -172,8 +172,10 @@ const NAV_SCRIPT = `
       e.preventDefault();
       prev();
     } else if (e.key === "Home") {
+      e.preventDefault();
       show(0);
     } else if (e.key === "End") {
+      e.preventDefault();
       show(slides.length - 1);
     }
   });
