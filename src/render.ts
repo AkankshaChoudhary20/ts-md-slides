@@ -185,8 +185,9 @@ const NAV_SCRIPT = `
   if (nextBtn) nextBtn.addEventListener("click", next);
   if (prevBtn) prevBtn.addEventListener("click", prev);
 
-  var initial = parseInt((location.hash || "").replace("#", ""), 10);
-  if (!isNaN(initial) && initial >= 1 && initial <= slides.length) {
+  var hash = location.hash || "";
+  var initial = /^#[0-9]+$/.test(hash) ? Number(hash.slice(1)) : 0;
+  if (initial >= 1 && initial <= slides.length) {
     show(initial - 1);
   } else {
     show(0);
